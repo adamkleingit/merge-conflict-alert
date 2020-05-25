@@ -41,8 +41,10 @@ async function run() {
     console.log('pwd', pwd);
     const ls = await exec.exec('ls', [`${pwd}/master`]);
     console.log('ls', ls);
-    const branches = await listBranches();
-    console.log("branches", branches);
+    const branches = await exec.exec('git', ['branch'], {cwd: `${pwd}/master`});
+    console.log('branches', branches);
+//     const branches = await listBranches();
+//     console.log("branches", branches);
     // await gitMergeCheck("conflicted_branch");
     // await gitMergeCheck("nonconflicted_branch");
     const nameToGreet = core.getInput("who-to-greet");
