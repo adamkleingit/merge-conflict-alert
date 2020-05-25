@@ -1,26 +1,22 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
-const exec = require("@actions/exec");
+// const exec = require("@actions/exec");
+const { exec } = require("child_process");
 
 async function execCommand(name, command) {
-  try {
-    const options = {};
-    options.listeners = {
-      stdout: (data) => {
-        const stdout = data.toString();
-        console.log(`${name}: ${stdout}`);
-      },
-      stderr: (data) => {
-        const stderr = data.toString();
-        // core.setFailed(stderr);
-        console.error(`${name} stderr: ${stderr}`);
-      },
-    };
-    return exec.exec(command, [], options);
-  } catch (error) {
-    // core.setFailed(error);
-    console.error(`${name} error: ${error.message}`);
-  }
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        core.setFailed(error);
+        reject(error);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      resolve(stdout);
+    });
+  });
 }
 
 async function gitMergeCheck(branch) {
