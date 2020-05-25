@@ -1,11 +1,11 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
-// const exec = require("@actions/exec");
-const { exec } = require("child_process");
+const exec = require("@actions/exec");
+const { exec: childProcessExec } = require("child_process");
 
 async function execCommand(name, command) {
   return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
+    childProcessExec(command, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
         core.setFailed(error);
@@ -25,14 +25,14 @@ async function gitMergeCheck(branch) {
 }
 
 async function listBranches() {
-  const command = "git branch -aq";
-  return execCommand("listBranches", command);
+  return execCommand("listBranches", "git branch -aq");
 }
 
 async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
-    const ls = await execCommand("ls -aR");
+    // const ls = await execCommand("ls -aR");
+    const ls = await exec.exec("ls", ["-aR"]);
     console.log("ls", ls);
     // await listBranches();
     // await gitMergeCheck("conflicted_branch");
