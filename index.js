@@ -5,17 +5,21 @@ const { exec: childProcessExec } = require("child_process");
 
 async function execCommand(name, command) {
   return new Promise((resolve, reject) => {
-    childProcessExec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        core.setFailed(error);
-        reject(error);
-        return;
+    childProcessExec(
+      command,
+      { cwd: "/home/runner/work/_actions/adamkleingit/merge-conflict-alert/" },
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          core.setFailed(error);
+          reject(error);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+        resolve(stdout);
       }
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
-      resolve(stdout);
-    });
+    );
   });
 }
 
@@ -32,9 +36,15 @@ async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
     // const ls = await execCommand("ls -aR");
-    const ls = await exec.exec("ls", ["-aR", "/"]);
+    const ls = await exec.exec("ls", [
+      "-aR",
+      "/home/runner/work/_actions/adamkleingit/merge-conflict-alert/",
+    ]);
     console.log("ls", ls);
-    // await listBranches();
+    const pwd = await exec.exec("pwd");
+    console.log("pwd", pwd);
+    const branches = await listBranches();
+    console.log("branches", branches);
     // await gitMergeCheck("conflicted_branch");
     // await gitMergeCheck("nonconflicted_branch");
     const nameToGreet = core.getInput("who-to-greet");
