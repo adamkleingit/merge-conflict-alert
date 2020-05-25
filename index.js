@@ -36,9 +36,9 @@ async function listBranches() {
 async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
-    await listBranches();
     const ls = await execCommand("ls -aR");
     console.log("ls", ls);
+    await listBranches();
     await gitMergeCheck("conflicted_branch");
     await gitMergeCheck("nonconflicted_branch");
     const nameToGreet = core.getInput("who-to-greet");
