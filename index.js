@@ -1,6 +1,6 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { exec } = require("@actions/exec");
+const exec = require("@actions/exec");
 
 async function execCommand(name, command) {
   try {
@@ -16,7 +16,7 @@ async function execCommand(name, command) {
         console.error(`${name} stderr: ${stderr}`);
       },
     };
-    return exec(command);
+    return exec.exec(command);
   } catch (error) {
     // core.setFailed(error);
     console.error(`${name} error: ${error.message}`);
@@ -38,9 +38,9 @@ async function run() {
     // `who-to-greet` input defined in action metadata file
     const ls = await execCommand("ls -aR");
     console.log("ls", ls);
-    await listBranches();
-    await gitMergeCheck("conflicted_branch");
-    await gitMergeCheck("nonconflicted_branch");
+    // await listBranches();
+    // await gitMergeCheck("conflicted_branch");
+    // await gitMergeCheck("nonconflicted_branch");
     const nameToGreet = core.getInput("who-to-greet");
     console.log(`Hello ${nameToGreet}!`);
     const time = new Date().toTimeString();

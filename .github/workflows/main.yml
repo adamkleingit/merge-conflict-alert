@@ -7,7 +7,7 @@ jobs:
     steps:
     - name: Alert on merge conflicts
       id: merge_conflicts
-      uses: adamkleingit/merge-conflict-alert@v0.5
+      uses: adamkleingit/merge-conflict-alert@master
       with:
         who-to-greet: 'Mona the Octocat2'
     # Use the output from the `hello` step
