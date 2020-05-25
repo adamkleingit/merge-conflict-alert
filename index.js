@@ -10,31 +10,31 @@ function execCommand(command, args = [], cwd) {
   console.log('command', command);
   console.log('args', args);
   return new Promise((resolve, reject) => {
-    options.listeners = {
-      stdout: (data) => {
-        const stdout = data.toString();
-        console.log('stdout');
-        resolve(stdout);
-      },
-      stderr: (data) => {
-        const stderr = data.toString();
-        console.log('stderr');
-        resolve(stderr);
-      }
-    };
-
-    exec.exec(command, args, options).then(r => console.log('resolved', r)).catch(err => resolve(err));
-//     childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
-//       if (error) {
-//         console.error(`exec error: ${error}`);
-// //         core.setFailed(error);
-//         resolve(error);
-//         return;
+//     options.listeners = {
+//       stdout: (data) => {
+//         const stdout = data.toString();
+//         console.log('stdout');
+//         resolve(stdout);
+//       },
+//       stderr: (data) => {
+//         const stderr = data.toString();
+//         console.log('stderr');
+//         resolve(stderr);
 //       }
-//       console.log(`stdout: ${stdout}`);
-//       console.error(`stderr: ${stderr}`);
-//       resolve(stdout);
-//     });
+//     };
+
+//     exec.exec(command, args, options).then(r => console.log('resolved', r)).catch(err => resolve(err));
+    childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+//         core.setFailed(error);
+        resolve(error);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      resolve(stdout);
+    });
   });
 }
 
