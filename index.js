@@ -6,14 +6,15 @@ const { exec: childProcessExec } = require("child_process");
 let pwd;
 async function execCommand(name, command, args = []) {
   const options = { cwd: `${pwd}/master` };
-
+  console.log(options);
+  console.log(`${command} ${args.join(' ')}`);
 //   return exec.exec(command, args, options);
   return new Promise((resolve, reject) => {
     childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
-        core.setFailed(error);
-        reject(error);
+//         core.setFailed(error);
+        resolve(error);
         return;
       }
       console.log(`stdout: ${stdout}`);
