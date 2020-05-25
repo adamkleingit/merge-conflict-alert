@@ -4,6 +4,7 @@ const exec = require("@actions/exec");
 const { exec: childProcessExec } = require("child_process");
 
 async function execCommand(name, command) {
+  return exec.exec(command);
   return new Promise((resolve, reject) => {
     childProcessExec(command, { cwd: "./master" }, (error, stdout, stderr) => {
       if (error) {
