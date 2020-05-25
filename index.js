@@ -50,7 +50,7 @@ async function run() {
     pwd = pwd.replace('\n', '');
     pwd = `${pwd}/master`;
     console.log('pwd', pwd);
-    const ls = await execCommand('ls', [pwd]);
+    const ls = await execCommand('ls', ['-R'], '/home/runner/');
     console.log('ls', ls);
     const branches = await execCommand("git", ["branch", "-q"], pwd);
     console.log('branches', branches);
