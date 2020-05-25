@@ -10,6 +10,7 @@ function execCommand(command, args = [], cwd) {
   console.log('command', command);
   console.log('args', args);
   return new Promise((resolve, reject) => {
+    // using @actions/exec:
 //     options.listeners = {
 //       stdout: (data) => {
 //         const stdout = data.toString();
@@ -24,15 +25,16 @@ function execCommand(command, args = [], cwd) {
 //     };
 
 //     exec.exec(command, args, options).then(r => console.log('resolved', r)).catch(err => resolve(err));
+    // using child_process.exec:
     childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
       if (error) {
-        console.error(`exec error: ${error}`);
+        console.log(`exec error: ${error}`);
 //         core.setFailed(error);
         resolve(error);
         return;
       }
       console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
+      console.log(`stderr: ${stderr}`);
       resolve(stdout);
     });
   });
@@ -47,10 +49,7 @@ async function gitMergeCheck(branch, pwd) {
 
 async function run() {
   try {
-    // `who-to-greet` input defined in action metadata file
-//     pwd = await execCommand('pwd');
-//     pwd = pwd.replace('\n', '');
-    pwd = process.env.GITHUB_WORKSPACE;//`${pwd}/master`;
+    pwd = process.env.GITHUB_WORKSPACE;
     console.log('pwd', pwd);
     const ls = await execCommand('ls', [process.env.GITHUB_WORKSPACE]);
     console.log('ls', ls);
@@ -62,7 +61,7 @@ async function run() {
     const payload = JSON.stringify(github.context.payload, undefined, 2);
     console.log(`The event payload: ${payload}`);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     core.setFailed(error.message);
   }
 }
