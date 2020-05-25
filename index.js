@@ -50,7 +50,9 @@ async function run() {
     pwd = pwd.replace('\n', '');
     pwd = `${pwd}/master`;
     console.log('pwd', pwd);
-    const ls = await execCommand('ls', ['-R'], '/home/runner/');
+    const env = await execCommand('env', []);
+    console.log('env', env);
+    const ls = await execCommand('ls', [], process.env.GITHUB_WORKSPACE);
     console.log('ls', ls);
     const branches = await execCommand("git", ["branch", "-q"], pwd);
     console.log('branches', branches);
