@@ -37,9 +37,9 @@ async function listBranches() {
 async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
-    const pwd = await exec.exec('pwd');
+    pwd = await exec.exec('pwd');
     console.log('pwd', pwd);
-    const ls = await exec.exec('ls');
+    const ls = await exec.exec('ls', [`${pwd}/master`]);
     console.log('ls', ls);
     const branches = await listBranches();
     console.log("branches", branches);
