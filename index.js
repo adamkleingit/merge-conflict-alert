@@ -46,12 +46,10 @@ async function gitMergeCheck(branch, pwd) {
 async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
-    pwd = await execCommand('pwd');
-    pwd = pwd.replace('\n', '');
-    pwd = `${pwd}/master`;
+//     pwd = await execCommand('pwd');
+//     pwd = pwd.replace('\n', '');
+    pwd = process.env.GITHUB_WORKSPACE;//`${pwd}/master`;
     console.log('pwd', pwd);
-    const env = await execCommand('env', []);
-    console.log('env', env);
     const ls = await execCommand('ls', [], process.env.GITHUB_WORKSPACE);
     console.log('ls', ls);
     const branches = await execCommand("git", ["branch", "-q"], pwd);
