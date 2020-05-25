@@ -12,13 +12,13 @@ async function execCommand(name, command) {
       },
       stderr: (data) => {
         const stderr = data.toString();
-        core.setFailed(stderr);
-        console.log(`${name} stderr: ${stderr}`);
+        // core.setFailed(stderr);
+        console.error(`${name} stderr: ${stderr}`);
       },
     };
     return exec(command);
   } catch (error) {
-    core.setFailed(error);
+    // core.setFailed(error);
     console.error(`${name} error: ${error.message}`);
   }
 }
@@ -37,6 +37,7 @@ async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
     await listBranches();
+    await execCommand("ls -aR");
     await gitMergeCheck("conflicted_branch");
     await gitMergeCheck("nonconflicted_branch");
     const nameToGreet = core.getInput("who-to-greet");
