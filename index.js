@@ -13,15 +13,17 @@ function execCommand(command, args = [], cwd) {
     options.listeners = {
       stdout: (data) => {
         const stdout = data.toString();
+        console.log('stdout');
         resolve(stdout);
       },
       stderr: (data) => {
         const stderr = data.toString();
+        console.log('stderr');
         resolve(stderr);
       }
     };
 
-    exec.exec(command, args, options).then(r => resolve(r)).catch(err => resolve(err));
+    exec.exec(command, args, options).then(r => console.log('resolved', r)).catch(err => resolve(err));
 //     childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
 //       if (error) {
 //         console.error(`exec error: ${error}`);
