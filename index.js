@@ -21,7 +21,7 @@ function execCommand(command, args = [], cwd) {
       }
     };
 
-    exec.exec(command, args, options).catch(err => resolve(err));
+    exec.exec(command, args, options).then(r => resolve(r)).catch(err => resolve(err));
 //     childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
 //       if (error) {
 //         console.error(`exec error: ${error}`);
