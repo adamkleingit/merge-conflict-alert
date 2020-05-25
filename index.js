@@ -4,8 +4,8 @@ const exec = require("@actions/exec");
 const { exec: childProcessExec } = require("child_process");
 
 let pwd;
-function execCommand(command, args = []) {
-  const options = pwd ? { cwd: `${pwd}/master` } : {};
+function execCommand(command, args = [], cwd) {
+  const options = cwd ? { cwd } : {};
   console.log('options', options);
   console.log('command', command);
   console.log('args', args);
@@ -36,25 +36,23 @@ function execCommand(command, args = []) {
   });
 }
 
-async function gitMergeCheck(branch) {
+async function gitMergeCheck(branch, pwd) {
   const mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
   return execCommand('git', ['merge-tree', mergeBase, 'HEAD', branch]);
   // lookup for ^+=======$
 }
 
-function listBranches() {
-  return execCommand("git", ["branch", "-q"]);
-}
 
 async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
     pwd = await execCommand('pwd');
     pwd = pwd.replace('\n', '');
+    pwd = `${pwd}/master`;
     console.log('pwd', pwd);
-    const ls = await execCommand('ls', [`${pwd}/master`]);
+    const ls = await execCommand('ls', [pwd]);
     console.log('ls', ls);
-    const branches = await listBranches();
+    const branches = await execCommand("git", ["branch", "-q"], pwd);
     console.log('branches', branches);
     // await gitMergeCheck("conflicted_branch");
     // await gitMergeCheck("nonconflicted_branch");
