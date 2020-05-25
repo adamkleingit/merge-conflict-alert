@@ -9,7 +9,7 @@ async function execCommand(name, command, args = []) {
 
 //   return exec.exec(command, args, options);
   return new Promise((resolve, reject) => {
-    childProcessExec(`command ${args.join(' ')}`, options, (error, stdout, stderr) => {
+    childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
         core.setFailed(error);
