@@ -3,7 +3,7 @@ const github = require("@actions/github");
 const exec = require("@actions/exec");
 const { exec: childProcessExec } = require("child_process");
 
-async function execCommand(name, command, args) {
+async function execCommand(name, command, args = []) {
   const options = { cwd: "./master" };
   return exec.exec(command, args, options);
   return new Promise((resolve, reject) => {
@@ -23,7 +23,7 @@ async function execCommand(name, command, args) {
 
 async function gitMergeCheck(branch) {
   const command = `git merge-tree $(git merge-base HEAD ${branch}) HEAD ${branch} | grep -q '^+=======$' && echo conflict || echo "no conflict"`;
-  return execCommand("listBranches", command, []);
+  return execCommand("listBranches", command);
 }
 
 async function listBranches() {
@@ -33,6 +33,8 @@ async function listBranches() {
 async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
+    const pwd = await execCommand('pwd', 'pwd');
+    console.log('pwd', pwd);
     const branches = await listBranches();
     console.log("branches", branches);
     // await gitMergeCheck("conflicted_branch");
