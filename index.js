@@ -37,8 +37,10 @@ async function listBranches() {
 async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
-    pwd = await execCommand('pwd', 'pwd');
+    const pwd = await exec.exec('pwd');
     console.log('pwd', pwd);
+    const ls = await exec.exec('ls');
+    console.log('ls', ls);
     const branches = await listBranches();
     console.log("branches", branches);
     // await gitMergeCheck("conflicted_branch");
