@@ -5,7 +5,7 @@ const { exec: childProcessExec } = require("child_process");
 
 async function execCommand(name, command, args = []) {
   const options = { cwd: "./master" };
-  return exec.exec(command, args, options);
+//   return exec.exec(command, args, options);
   return new Promise((resolve, reject) => {
     childProcessExec(`command ${args.join(' ')}`, options, (error, stdout, stderr) => {
       if (error) {
@@ -35,8 +35,8 @@ async function run() {
     // `who-to-greet` input defined in action metadata file
     const pwd = await execCommand('pwd', 'pwd');
     console.log('pwd', pwd);
-//     const branches = await listBranches();
-//     console.log("branches", branches);
+    const branches = await listBranches();
+    console.log("branches", branches);
     // await gitMergeCheck("conflicted_branch");
     // await gitMergeCheck("nonconflicted_branch");
     const nameToGreet = core.getInput("who-to-greet");
