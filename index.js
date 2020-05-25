@@ -16,7 +16,7 @@ async function execCommand(name, command) {
         console.error(`${name} stderr: ${stderr}`);
       },
     };
-    return exec.exec(command);
+    return exec.exec(command, [], options);
   } catch (error) {
     // core.setFailed(error);
     console.error(`${name} error: ${error.message}`);
