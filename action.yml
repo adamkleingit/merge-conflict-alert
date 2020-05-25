@@ -1,0 +1,14 @@
+name: 'Merge Conflict Alert'
+description: Alert if your branch conflicts with any other work in progress branch that was recently updated.
+Also alerts on stale branches that haven't been merged or updated for a long time
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'node12'
+  main: 'index.js'
