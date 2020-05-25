@@ -4,7 +4,7 @@ const exec = require("@actions/exec");
 const { exec: childProcessExec } = require("child_process");
 
 let pwd;
-async function execCommand(command, args = []) {
+function execCommand(command, args = []) {
   const options = pwd ? { cwd: `${pwd}/master` } : {};
   console.log('options', options);
   console.log('command', command);
@@ -21,7 +21,7 @@ async function execCommand(command, args = []) {
       }
     };
 
-    exec.exec(command, args, options);
+    exec.exec(command, args, options).catch(err => resolve(err));
 //     childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
 //       if (error) {
 //         console.error(`exec error: ${error}`);
@@ -42,7 +42,7 @@ async function gitMergeCheck(branch) {
   // lookup for ^+=======$
 }
 
-async function listBranches() {
+function listBranches() {
   return execCommand("git", ["branch", "-q"]);
 }
 
@@ -50,22 +50,15 @@ async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
     pwd = await execCommand('pwd');
+    pwd = pwd.replace('\n', '');
     console.log('pwd', pwd);
     const ls = await execCommand('ls', [`${pwd}/master`]);
     console.log('ls', ls);
     const branches = await listBranches();
     console.log('branches', branches);
-//     const branches = await listBranches();
-//     console.log("branches", branches);
     // await gitMergeCheck("conflicted_branch");
     // await gitMergeCheck("nonconflicted_branch");
-    const 
     
-    ToGreet = core.getInput("who-to-greet");
-    console.log(`Hello ${nameToGreet}!`);
-    const time = new Date().toTimeString();
-    core.setOutput("time", time);
-    // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2);
     console.log(`The event payload: ${payload}`);
   } catch (error) {
