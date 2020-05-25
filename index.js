@@ -32,7 +32,7 @@ async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
     // const ls = await execCommand("ls -aR");
-    const ls = await exec.exec("ls", ["-aR"]);
+    const ls = await exec.exec("ls", ["-aR", "/"]);
     console.log("ls", ls);
     // await listBranches();
     // await gitMergeCheck("conflicted_branch");
