@@ -9,7 +9,7 @@ jobs:
       id: merge_conflicts
       uses: adamkleingit/merge-conflict-alert@master
       with:
-        who-to-greet: 'Mona the Octocat'
+        who-to-greet: 'Mona the Octocat2'
     # Use the output from the `hello` step
     - name: Get the output time
       run: echo "The time was ${{ steps.merge_conflicts.outputs.time }}"
