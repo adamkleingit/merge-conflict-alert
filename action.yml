@@ -1,6 +1,5 @@
 name: 'Merge Conflict Alert'
-description: Alert if your branch conflicts with any other work in progress branch that was recently updated.
-Also alerts on stale branches that haven't been merged or updated for a long time
+description: Alert if your branch conflicts with any other work in progress branch that was recently updated.\nAlso alerts on stale branches that haven't been merged or updated for a long time
 inputs:
   who-to-greet:  # id of input
     description: 'Who to greet'

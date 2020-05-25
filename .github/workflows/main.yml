@@ -1,0 +1,15 @@
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+    - name: Alert on merge conflicts
+      id: merge_conflicts
+      uses: actions/merge-conflict-alert@v0.1-alpha
+      with:
+        who-to-greet: 'Mona the Octocat'
+    # Use the output from the `hello` step
+    - name: Get the output time
+      run: echo "The time was ${{ steps.merge_conflicts.outputs.time }}"
