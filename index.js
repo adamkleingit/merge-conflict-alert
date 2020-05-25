@@ -3,15 +3,18 @@ const github = require("@actions/github");
 const exec = require("@actions/exec");
 const { exec: childProcessExec } = require("child_process");
 
+let pwd;
 async function execCommand(name, command, args = []) {
-  const options = { cwd: "./master" };
+  const options = { cwd: `${pwd}/master` };
+  console.log(options);
+  console.log(`${command} ${args.join(' ')}`);
 //   return exec.exec(command, args, options);
   return new Promise((resolve, reject) => {
-    childProcessExec(`command ${args.join(' ')}`, options, (error, stdout, stderr) => {
+    childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
-        core.setFailed(error);
-        reject(error);
+//         core.setFailed(error);
+        resolve(error);
         return;
       }
       console.log(`stdout: ${stdout}`);
@@ -33,7 +36,7 @@ async function listBranches() {
 async function run() {
   try {
     // `who-to-greet` input defined in action metadata file
-    const pwd = await execCommand('pwd', 'pwd');
+    pwd = await execCommand('pwd', 'pwd');
     console.log('pwd', pwd);
     const branches = await listBranches();
     console.log("branches", branches);
