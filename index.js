@@ -25,7 +25,7 @@ async function gitMergeCheck(branch) {
 }
 
 async function listBranches() {
-  return execCommand("listBranches", "git branch -aq");
+  return execCommand("listBranches", "git branch -q");
 }
 
 async function run() {
