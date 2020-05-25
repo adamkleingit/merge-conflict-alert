@@ -5,7 +5,7 @@ const { exec: childProcessExec } = require("child_process");
 
 let pwd;
 async function execCommand(name, command, args = []) {
-  const options = { cwd: `${pwd}/master` };
+  const options = pwd ? { cwd: `${pwd}/master` } : {};
   console.log(options);
   console.log(`${command} ${args.join(' ')}`);
 //   return exec.exec(command, args, options);
