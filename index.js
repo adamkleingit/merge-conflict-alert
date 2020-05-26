@@ -26,7 +26,7 @@ function execCommand(command, args = []) {
   });
 }
 
-async function gitMergeConflicts(branch) {
+async function gitMergeConflictsCheck(branch) {
   const mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
   const mergeTree = await execCommand('git', ['merge-tree', mergeBase, 'HEAD', branch]);
   return mergeTree.match(/^\+=======$/);
@@ -34,11 +34,12 @@ async function gitMergeConflicts(branch) {
 
 async function run() {
   try {
-    let branches = await execCommand("git", ["branch", "-aq"]);
     let errors = '';
+    let branches = await execCommand("git", ["branch", "-aq"]);
     branches = branches.split('\n').map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
+    console.log(branches);
     for(let branch in branches) {
-      const isConflicted = await gitMergeCheck("origin/conflicted_branch");
+      const isConflicted = await gitMergeConflictsCheck("origin/conflicted_branch");
       
       if (isConflicted) {
         errors += `branch has conflicts with ${branch}\n`;
