@@ -56,13 +56,14 @@ async function run() {
   try {
     const ls = await execCommand('ls');
     console.log('ls', ls);
-    const branches = await execCommand("git", ["branch", "-q"]);
+    const branches = await execCommand("git", ["branch", "-aq"]);
     console.log('branches', branches);
-    await gitMergeCheck("conflicted_branch");
-    // await gitMergeCheck("nonconflicted_branch");
+    const conflicted_branch = await gitMergeCheck("origin/conflicted_branch");
+    console.log(conflicted_branch);
+    const nonconflicted_branch = await gitMergeCheck("origin/nonconflicted_branch");
+    console.log(nonconflicted_branch);
     
     const payload = JSON.stringify(github.context.payload, undefined, 2);
-    console.log(`The event payload: ${payload}`);
   } catch (error) {
     console.log(error);
     core.setFailed(error.message);
