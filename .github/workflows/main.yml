@@ -9,8 +9,10 @@ jobs:
     - name: Alert on merge conflicts
       id: merge_conflicts
       uses: adamkleingit/merge-conflict-alert@master
+      continue-on-error: true
       with:
         githubToken: ${{ secrets.GITHUB_TOKEN }}
     # Use the output from the `hello` step
     - name: Get the merge conflicts
-      run: echo "The time was ${{ steps.merge_conflicts.outputs.conflicts }}"
+      if: steps.merge_conflicts.outputs.conflicts
+      run: echo "${{ steps.merge_conflicts.outputs.conflicts }}"
