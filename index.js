@@ -33,10 +33,12 @@ async function run() {
   try {
     let errors = '';
     let branches = await execCommand("git", ["branch", "-aq"]);
+    core.debug(JSON.stringify(github.context.payload, null, 2));
     branches = branches
       .split('\n')
       .map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
       .filter(branch => branch.includes('remotes'));
+      .filter(branch => branch !== `remotes/origin/${github.context.payload.default_branch}`)
     core.debug('brances');
     core.debug('-------');
     core.debug(branches);
