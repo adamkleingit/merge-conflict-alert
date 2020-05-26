@@ -14,7 +14,7 @@ function execCommand(command, args = []) {
       stdout: (data) => {
         const stdout = data.toString();
         console.log('stdout');
-        resolve(stdout);
+        resolve(stdout.replace(/\n/g, ''));
       },
       stderr: (data) => {
         const stderr = data.toString();
@@ -54,8 +54,6 @@ async function gitMergeCheck(branch) {
 
 async function run() {
   try {
-    const ls = await execCommand('ls');
-    console.log('ls', ls);
     const branches = await execCommand("git", ["branch", "-aq"]);
     console.log('branches', branches);
     const conflicted_branch = await gitMergeCheck("origin/conflicted_branch");
