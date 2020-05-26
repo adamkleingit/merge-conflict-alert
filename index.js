@@ -37,7 +37,7 @@ async function run() {
     branches = branches
       .split('\n')
       .map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
-      .filter(branch => branch.includes('remotes'));
+      .filter(branch => branch.includes('remotes'))
       .filter(branch => branch !== `remotes/origin/${github.context.payload.default_branch}`)
     core.debug('brances');
     core.debug('-------');
