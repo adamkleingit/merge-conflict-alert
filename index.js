@@ -24,7 +24,8 @@ function execCommand(command, args = []) {
 }
 
 async function gitMergeConflictsCheck(branch) {
-  const mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
+  let mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
+  mergeBase = mergeBase.replace(/\n/g, '');
   const mergeTree = await execCommand('git', ['merge-tree', mergeBase, 'HEAD', branch]);
   const conflicts = [];
   let isConflict, startIndex, endIndex, curBlock;
