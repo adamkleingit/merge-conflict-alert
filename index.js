@@ -27,9 +27,7 @@ async function gitMergeConflictsCheck(branch) {
   const mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
   const mergeTree = await execCommand('git', ['merge-tree', mergeBase, 'HEAD', branch]);
   const conflicts = [];
-  let isConflict;
-  const startIndex, endIndex;
-  let curBlock;
+  let isConflict, startIndex, endIndex, curBlock;
   mergeTree.split('\n').forEach((row, index) => {
     if (row.includes('+<<<<<<<')) {
       startIndex = index;
