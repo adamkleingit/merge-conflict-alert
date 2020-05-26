@@ -58,6 +58,9 @@ async function gitMergeConflictsCheck(branch) {
 
 async function run() {
   try {
+    const githubToken = core.getInput('githubToken');
+    const octokit = new github.GitHub(githubToken);
+
     let errors = '';
     const currentBranch = github.context.payload.ref.replace('refs/heads/', '');
     const defaultBranch = github.context.payload.repository.default_branch;
@@ -90,9 +93,11 @@ async function run() {
       }
     }
     if (errors) {
-      core.setFailed(errors);
+      core.setOutput('conflicts', errors);
+      core.warning(errors);
     } else {
       core.debug('Finished without errors');
+      core.setOutput('conflicts', null);
     }
   } catch (error) {
     core.error(error);
