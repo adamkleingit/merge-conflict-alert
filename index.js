@@ -17,6 +17,9 @@ function execCommand(command, args = []) {
     };
 
     exec.exec(command, args, options)
+      .then(exitCode => {
+        resolve('');
+      })
       .catch(err => {
         reject(err);
       });
@@ -24,21 +27,23 @@ function execCommand(command, args = []) {
 }
 
 async function gitMergeConflictsCheck(branch) {
-  const mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
+  let mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
+  mergeBase = mergeBase.replace(/\n/g, '');
   const mergeTree = await execCommand('git', ['merge-tree', mergeBase, 'HEAD', branch]);
+
   const conflicts = [];
-  let isConflict, startIndex, endIndex, curBlock;
+  let isConflict, startIndex, endIndex, block;
   mergeTree.split('\n').forEach((row, index) => {
     if (row.includes('+<<<<<<<')) {
       startIndex = index;
-      curBlock = '';
+      block = '';
     }
     if (startIndex !== null) {
-      curBlock += `\n${row}`;
+      block += `\n${row}`;
     }
     if (row.includes('+>>>>>>>')) {
       if (isConflict) {
-        conflicts.push([startIndex, index, curBlock]); 
+        conflicts.push({startIndex, index, block}); 
       }
       startIndex = null;
       isConflict = false;
@@ -47,6 +52,7 @@ async function gitMergeConflictsCheck(branch) {
       isConflict = true;
     }
   });
+
   return conflicts;
 }
 
@@ -60,28 +66,33 @@ async function run() {
       return;
     }
     let branches = await execCommand("git", ["branch", "-aq"]);
-    console.log(JSON.stringify(github.context.payload, null, 2));
+    core.debug('branches raw');
+    core.debug('-------');
+    core.debug(branches);
     branches = branches
       .split('\n')
       .map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
       .filter(branch => branch.includes('remotes'));
-    core.debug('brances');
+    core.debug('branches');
     core.debug('-------');
-    for(let branch in branches) {
+    core.debug(branches);
+    for(let branch of branches) {
       core.debug(`checking branch ${branch}`);
       const conflicts = await gitMergeConflictsCheck(branch);
       
-      if (conflicts) {
+      if (conflicts.length) {
         core.debug(`branch ${branch} has conflicts `);
-        errors += `branch has conflicts with ${branch}\n`;
-        core.debug(conflicts);
+        const blocks = conflicts.map(conflict => conflict.block).join('\n');
+        errors += `branch has conflicts with ${branch}:\n${blocks}\n`;
         // TODO: report author of branch, code that conflicts
       } else {
         core.debug(`branch ${branch} has no conflicts`);
       }
     }
     if (errors) {
-      core.warning(errors);
+      core.setFailed(errors);
+    } else {
+      core.debug('Finished without errors');
     }
   } catch (error) {
     core.error(error);
