@@ -18,8 +18,6 @@ function execCommand(command, args = []) {
 
     exec.exec(command, args, options)
       .then(exitCode => {
-        core.debug('exitCode');
-        core.debug(exitCode);
         resolve('');
       })
       .catch(err => {
@@ -32,22 +30,20 @@ async function gitMergeConflictsCheck(branch) {
   let mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
   mergeBase = mergeBase.replace(/\n/g, '');
   const mergeTree = await execCommand('git', ['merge-tree', mergeBase, 'HEAD', branch]);
-  core.debug('mergeTree');
-  core.debug(mergeTree);
 
   const conflicts = [];
-  let isConflict, startIndex, endIndex, curBlock;
+  let isConflict, startIndex, endIndex, block;
   mergeTree.split('\n').forEach((row, index) => {
     if (row.includes('+<<<<<<<')) {
       startIndex = index;
-      curBlock = '';
+      block = '';
     }
     if (startIndex !== null) {
-      curBlock += `\n${row}`;
+      block += `\n${row}`;
     }
     if (row.includes('+>>>>>>>')) {
       if (isConflict) {
-        conflicts.push([startIndex, index, curBlock]); 
+        conflicts.push({startIndex, index, block}); 
       }
       startIndex = null;
       isConflict = false;
@@ -56,8 +52,6 @@ async function gitMergeConflictsCheck(branch) {
       isConflict = true;
     }
   });
-  core.debug('conflicts');
-  core.debug(conflicts);
 
   return conflicts;
 }
@@ -85,13 +79,11 @@ async function run() {
     for(let branch of branches) {
       core.debug(`checking branch ${branch}`);
       const conflicts = await gitMergeConflictsCheck(branch);
-      core.debug('conflicts');
-      core.debug(conflicts);
       
-      if (conflicts) {
+      if (conflicts.length) {
         core.debug(`branch ${branch} has conflicts `);
-        errors += `branch has conflicts with ${branch}\n`;
-        core.debug(conflicts);
+        const blocks = conflicts.map(conflict => conflict.block).join('\n');
+        errors += `branch has conflicts with ${branch}:\n${blocks}\n`;
         // TODO: report author of branch, code that conflicts
       } else {
         core.debug(`branch ${branch} has no conflicts`);
