@@ -60,6 +60,9 @@ async function run() {
       return;
     }
     let branches = await execCommand("git", ["branch", "-aq"]);
+    core.debug('branches raw');
+    core.debug('-------');
+    core.debug(branches);
     branches = branches
       .split('\n')
       .map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
