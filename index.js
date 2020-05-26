@@ -58,9 +58,6 @@ async function gitMergeConflictsCheck(branch) {
 
 async function run() {
   try {
-    const githubToken = core.getInput('githubToken');
-    const octokit = new github.GitHub(githubToken);
-
     let errors = '';
     const currentBranch = github.context.payload.ref.replace('refs/heads/', '');
     const defaultBranch = github.context.payload.repository.default_branch;
