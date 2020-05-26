@@ -64,9 +64,9 @@ async function run() {
       .split('\n')
       .map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
       .filter(branch => branch.includes('remotes'));
-    core.debug('brances');
+    core.debug('branches');
     core.debug('-------');
-    core.debug(brances);
+    core.debug(branches);
     for(let branch in branches) {
       core.debug(`checking branch ${branch}`);
       const conflicts = await gitMergeConflictsCheck(branch);
