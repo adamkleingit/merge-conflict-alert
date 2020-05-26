@@ -90,9 +90,11 @@ async function run() {
       }
     }
     if (errors) {
+      core.setOutput('conflicts', errors);
       core.setFailed(errors);
     } else {
       core.debug('Finished without errors');
+      core.setOutput('conflicts', null);
     }
   } catch (error) {
     core.error(error);

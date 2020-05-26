@@ -9,8 +9,8 @@ jobs:
     - name: Alert on merge conflicts
       id: merge_conflicts
       uses: adamkleingit/merge-conflict-alert@master
-      with:
-        who-to-greet: 'Mona the Octocat2'
+      continue-on-error: true
     # Use the output from the `hello` step
-    - name: Get the output time
-      run: echo "The time was ${{ steps.merge_conflicts.outputs.time }}"
+    - name: Get the merge conflicts
+      if: steps.merge_conflicts.outputs.conflicts
+      run: echo "${{ steps.merge_conflicts.outputs.conflicts }}"
