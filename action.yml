@@ -1,9 +1,5 @@
 name: 'Merge Conflict Alert'
 description: Alert if your branch conflicts with any other work in progress branch that was recently updated.\nAlso alerts on stale branches that haven't been merged or updated for a long time
-inputs:
-  githubToken:
-    description: 'Github Token'
-    required: true
 outputs:
   conflicts:
     description: 'The conflicts that were found'
