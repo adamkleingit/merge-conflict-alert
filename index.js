@@ -27,6 +27,9 @@ async function gitMergeConflictsCheck(branch) {
   let mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
   mergeBase = mergeBase.replace(/\n/g, '');
   const mergeTree = await execCommand('git', ['merge-tree', mergeBase, 'HEAD', branch]);
+  core.debug('mergeTree');
+  core.debug(mergeTree);
+
   const conflicts = [];
   let isConflict, startIndex, endIndex, curBlock;
   mergeTree.split('\n').forEach((row, index) => {
@@ -48,6 +51,9 @@ async function gitMergeConflictsCheck(branch) {
       isConflict = true;
     }
   });
+  core.debug('conflicts');
+  core.debug(conflicts);
+
   return conflicts;
 }
 
@@ -74,6 +80,8 @@ async function run() {
     for(let branch of branches) {
       core.debug(`checking branch ${branch}`);
       const conflicts = await gitMergeConflictsCheck(branch);
+      core.debug('conflicts');
+      core.debug(conflicts);
       
       if (conflicts) {
         core.debug(`branch ${branch} has conflicts `);
@@ -86,6 +94,8 @@ async function run() {
     }
     if (errors) {
       core.setFailed(errors);
+    } else {
+      core.debug('Finished without errors');
     }
   } catch (error) {
     core.error(error);
