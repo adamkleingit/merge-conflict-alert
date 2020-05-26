@@ -3,44 +3,49 @@ const github = require("@actions/github");
 const exec = require("@actions/exec");
 const { exec: childProcessExec } = require("child_process");
 
-let pwd;
-function execCommand(command, args = [], cwd) {
-  const options = cwd ? { cwd } : {};
+function execCommand(command, args = []) {
+  const options = { cwd: process.env.GITHUB_WORKSPACE };
   console.log('options', options);
   console.log('command', command);
   console.log('args', args);
   return new Promise((resolve, reject) => {
     // using @actions/exec:
-//     options.listeners = {
-//       stdout: (data) => {
-//         const stdout = data.toString();
-//         console.log('stdout');
-//         resolve(stdout);
-//       },
-//       stderr: (data) => {
-//         const stderr = data.toString();
-//         console.log('stderr');
-//         resolve(stderr);
-//       }
-//     };
-
-//     exec.exec(command, args, options).then(r => console.log('resolved', r)).catch(err => resolve(err));
-    // using child_process.exec:
-    childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
-      if (error) {
-        console.log(`exec error: ${error}`);
-//         core.setFailed(error);
-        resolve(error);
-        return;
+    options.listeners = {
+      stdout: (data) => {
+        const stdout = data.toString();
+        console.log('stdout');
+        resolve(stdout);
+      },
+      stderr: (data) => {
+        const stderr = data.toString();
+        console.log('stderr');
+        core.setFailed(stderr);
+        reject(stderr);
       }
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-      resolve(stdout);
-    });
+    };
+
+    exec.exec(command, args, options)
+      .then(r => console.log('resolved', r))
+      .catch(err => {
+        core.setFailed(err);
+        reject(err);
+      });
+    // using child_process.exec:
+//     childProcessExec(`${command} ${args.join(' ')}`, options, (error, stdout, stderr) => {
+//       if (error) {
+//         console.log(`exec error: ${error}`);
+// //         core.setFailed(error);
+//         resolve(error);
+//         return;
+//       }
+//       console.log(`stdout: ${stdout}`);
+//       console.log(`stderr: ${stderr}`);
+//       resolve(stdout);
+//     });
   });
 }
 
-async function gitMergeCheck(branch, pwd) {
+async function gitMergeCheck(branch) {
   const mergeBase = await execCommand('git', ['merge-base', 'HEAD', branch]);
   return execCommand('git', ['merge-tree', mergeBase, 'HEAD', branch]);
   // lookup for ^+=======$
@@ -49,13 +54,11 @@ async function gitMergeCheck(branch, pwd) {
 
 async function run() {
   try {
-    pwd = process.env.GITHUB_WORKSPACE;
-    console.log('pwd', pwd);
-    const ls = await execCommand('ls', [process.env.GITHUB_WORKSPACE]);
+    const ls = await execCommand('ls');
     console.log('ls', ls);
-    const branches = await execCommand("git", ["branch", "-q"], pwd);
+    const branches = await execCommand("git", ["branch", "-q"]);
     console.log('branches', branches);
-    // await gitMergeCheck("conflicted_branch");
+    await gitMergeCheck("conflicted_branch");
     // await gitMergeCheck("nonconflicted_branch");
     
     const payload = JSON.stringify(github.context.payload, undefined, 2);
