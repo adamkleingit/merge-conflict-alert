@@ -1,15 +1,16 @@
 on: [push]
 
 jobs:
-  hello_world_job:
+  merge_conflicts:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: Check if any other branch is conflicting with ours
     steps:
+    - uses: actions/checkout@v1
     - name: Alert on merge conflicts
       id: merge_conflicts
-      uses: adamkleingit/merge-conflict-alert@v0.2
+      uses: adamkleingit/merge-conflict-alert@master
       with:
-        who-to-greet: 'Mona the Octocat'
+        who-to-greet: 'Mona the Octocat2'
     # Use the output from the `hello` step
     - name: Get the output time
       run: echo "The time was ${{ steps.merge_conflicts.outputs.time }}"
