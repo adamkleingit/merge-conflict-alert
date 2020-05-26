@@ -81,7 +81,7 @@ async function run() {
       }
     }
     if (errors) {
-      core.setFailed(errors);
+      core.warning(errors);
     }
   } catch (error) {
     core.error(error);
