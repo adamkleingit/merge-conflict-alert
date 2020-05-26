@@ -55,18 +55,18 @@ async function run() {
     let errors = '';
     const currentBranch = github.context.payload.ref.replace('refs/heads/', '');
     const defaultBranch = github.context.payload.repository.default_branch;
-    if (currentBranch === defaultBranch) {
+    if (false) {//currentBranch === defaultBranch) {
       core.debug(`Current branch is default branch - '${currentBranch}', skipping check`);
       return;
     }
     let branches = await execCommand("git", ["branch", "-aq"]);
-    console.log(JSON.stringify(github.context.payload, null, 2));
     branches = branches
       .split('\n')
       .map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
       .filter(branch => branch.includes('remotes'));
     core.debug('brances');
     core.debug('-------');
+    core.debug(brances);
     for(let branch in branches) {
       core.debug(`checking branch ${branch}`);
       const conflicts = await gitMergeConflictsCheck(branch);
