@@ -8,6 +8,7 @@ function execCommand(command, args = []) {
     options.listeners = {
       stdout: (data) => {
         const stdout = data.toString();
+        core.debug('stdout', stdout)
         resolve(stdout);
       },
       stderr: (data) => {
@@ -17,6 +18,7 @@ function execCommand(command, args = []) {
     };
 
     exec.exec(command, args, options)
+      .then(r => core.debug('r', r))
       .catch(err => {
         reject(err);
       });
