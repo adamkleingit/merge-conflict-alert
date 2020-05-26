@@ -90,7 +90,7 @@ async function run() {
       }
     }
     if (errors) {
-      core.warning(errors);
+      core.setFailed(errors);
     } else {
       core.debug('Finished without errors');
     }
