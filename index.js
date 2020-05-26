@@ -4,9 +4,6 @@ const exec = require("@actions/exec");
 
 function execCommand(command, args = []) {
   const options = { cwd: process.env.GITHUB_WORKSPACE };
-  console.log('options', options);
-  console.log('command', command);
-  console.log('args', args);
   return new Promise((resolve, reject) => {
     options.listeners = {
       stdout: (data) => {
@@ -36,10 +33,15 @@ async function run() {
   try {
     let errors = '';
     let branches = await execCommand("git", ["branch", "-aq"]);
-    branches = branches.split('\n').map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
-    console.log(branches);
+    branches = branches
+      .split('\n')
+      .map(branch => branch.replace(/\*/g, '').replace(/\s/g, ''))
+      .filter(branch => branch.includes('remotes'));
+    core.debug('brances');
+    core.debug('-------');
+    core.debug(branches);
     for(let branch in branches) {
-      const isConflicted = await gitMergeConflictsCheck("origin/conflicted_branch");
+      const isConflicted = await gitMergeConflictsCheck(branch);
       
       if (isConflicted) {
         errors += `branch has conflicts with ${branch}\n`;
@@ -50,7 +52,7 @@ async function run() {
       core.setFailed(errors);
     }
   } catch (error) {
-    console.log(error);
+    core.error(error);
     core.setFailed(error.message);
   }
 }
