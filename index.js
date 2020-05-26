@@ -52,6 +52,7 @@ async function gitMergeConflictsCheck(branch) {
 
 async function run() {
   try {
+    core.debug('weird')
     let errors = '';
     const currentBranch = github.context.payload.ref.replace('refs/heads/', '');
     const defaultBranch = github.context.payload.repository.default_branch;
