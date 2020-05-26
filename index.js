@@ -61,7 +61,7 @@ async function run() {
     let errors = '';
     const currentBranch = github.context.payload.ref.replace('refs/heads/', '');
     const defaultBranch = github.context.payload.repository.default_branch;
-    if (false) {//currentBranch === defaultBranch) {
+    if (currentBranch === defaultBranch) {
       core.debug(`Current branch is default branch - '${currentBranch}', skipping check`);
       return;
     }
